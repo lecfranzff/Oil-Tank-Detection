@@ -1,0 +1,27 @@
+# secrets
+.env
+
+# data, weights, imagery
+data/*
+!data/splits.json
+checkpoints/
+legacy/
+*.pth
+*.tif
+*.zip
+
+# python
+__pycache__/
+.pytest_cache/
+
+# scratch: everything ignored except the final Hardisty deliverables
+scratch/*
+!scratch/hardisty/
+scratch/hardisty/*
+!scratch/hardisty/ground_truth.csv
+!scratch/hardisty/ground_truth.sha256
+!scratch/hardisty/detections.csv
+!scratch/hardisty/metrics.md
+!scratch/hardisty/annotated.jpg
+!scratch/hardisty/crop_sheet.jpg
+!scratch/hardisty/summary.png
