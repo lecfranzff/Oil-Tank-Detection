@@ -1,8 +1,5 @@
 """Fetch one AOI from Esri World Imagery as a georeferenced GeoTIFF, and VERIFY it.
 
-Ported from the old AIRS2026 scratch/fetch_esri.py (legacy/fetch_esri.py); only the
-hardcoded Corpus Christi defaults and output path were removed.
-
 Attribution: imagery (c) Esri, Maxar, Earthstar Geographics.
 
 The verification half matters as much as the download: Esri serves a flat grey

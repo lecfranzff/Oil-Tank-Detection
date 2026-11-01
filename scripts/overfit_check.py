@@ -1,6 +1,6 @@
-"""Gate 1: can the model memorise 16 training patches? If not, the training loop is broken.
+"""Overfit check: the model should memorise 16 training patches; if not, the training loop is broken.
 
-Also times the training step (used for Gate 2).
+Also reports seconds per training iteration on this machine.
 """
 import json
 import sys
@@ -23,7 +23,7 @@ from oiltank.model import build_model
 from oiltank.train import predict, train_one_epoch
 
 IMAGES = ROOT / "data/raw/Oil Tanks/image_patches"
-OUT = ROOT / "scratch/gate1"
+OUT = ROOT / "scratch/overfit_check"
 
 
 def main(epochs=40, n=16):
@@ -58,7 +58,7 @@ def main(epochs=40, n=16):
     plt.plot(losses)
     plt.xlabel("iteration (batch of 4)")
     plt.ylabel("total loss")
-    plt.title(f"Gate 1: overfitting {len(names)} patches")
+    plt.title(f"Overfitting {len(names)} patches")
     plt.tight_layout()
     plt.savefig(OUT / "loss.png", dpi=120)
 

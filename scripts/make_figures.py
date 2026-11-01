@@ -1,4 +1,4 @@
-"""Step 8 figures: annotated full images, crop sheet, one-page summary.png.
+"""Figures: annotated full images, crop sheet, one-page summary.png.
 
 Colours: GT targets green, detections red, fixed-roof tanks grey (labelled whether they
 were correctly ignored), edge-excluded tank dark grey.

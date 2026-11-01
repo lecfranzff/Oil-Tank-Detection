@@ -1,4 +1,4 @@
-"""Step 7: score detections against the hand-verified ground truth.
+"""Score detections against the hand-verified ground truth.
 
 Rules (fixed before detection was run):
 - A detection matches a GT tank if its centre lies within 0.5 x GT radius; one-to-one,

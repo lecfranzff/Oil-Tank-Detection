@@ -1,4 +1,4 @@
-"""Steps 5-6: detect tanks on the Hardisty AOI at 0.55 and 0.8 m/px, before and after the merge pass.
+"""Detect tanks on the Hardisty AOI at 0.55 and 0.8 m/px, before and after the merge pass.
 
 Writes scratch/hardisty/detections.csv (merged boxes) and detections_raw.csv (after NMS,
 before merge), and prints counts and CPU runtime.

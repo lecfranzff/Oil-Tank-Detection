@@ -1,4 +1,4 @@
-"""Step 4a: label statistics + scene-level train/val/test split -> data/splits.json."""
+"""Label statistics + scene-level train/val/test split -> data/splits.json."""
 import json
 import sys
 from pathlib import Path

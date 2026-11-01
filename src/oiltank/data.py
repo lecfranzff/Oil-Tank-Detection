@@ -2,7 +2,7 @@
 
 Patch file names look like `01_3_7.jpg` = scene 01, row 3, col 7. The 100 patches of a
 scene overlap each other, so patches from one scene must never be split across
-train/val/test -- that leak is what made the old model's score look too good.
+train/val/test, or near-duplicate patches would leak into evaluation.
 """
 import json
 import random

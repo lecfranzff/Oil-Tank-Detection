@@ -1,7 +1,5 @@
 """Run the detector over a large image: overlapping tiles -> one global NMS -> merge pass.
 
-tile_detect is ported from the old AIRS2026 scratch/step5_pipeline.py (legacy/), with
-the checkpoint loading removed and the overlap made a parameter.
 """
 import time
 
