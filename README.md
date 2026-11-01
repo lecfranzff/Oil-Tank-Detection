@@ -1,70 +1,139 @@
 # Oil Tank Detection
 
-Can a detector trained only on the Kaggle Oil Storage Tanks dataset find and count the
-external floating-roof tanks at a real, unseen Alberta terminal, and does it correctly
-ignore fixed-roof tanks?
+Detecting external floating-roof oil storage tanks in satellite imagery, and testing
+whether a model trained on public data transfers to a real terminal it has never seen.
 
 ![summary](docs/figures/summary.png)
 
-## Result (Keystone Hardisty terminal, Hardisty AB; Esri imagery captured 2022-06-08)
+## Problem formulation
+
+**Why floating-roof tanks.** Crude oil is commonly stored in tanks whose roof floats on
+the liquid. Seen from above, the roof sits below the rim and the rim casts a crescent
+shadow onto it; the lower the roof, the larger that inner shadow. Finding these tanks is
+the first step toward estimating how much oil a terminal holds from imagery alone.
+
+**Task.** Single-class object detection: given an RGB satellite image, output a bounding
+box for every *external floating-roof* tank. Fixed-roof and domed tanks are **not**
+targets and should be ignored, even though they are also round storage tanks.
+
+**Question.** Can a detector trained only on a public dataset (mostly US Gulf Coast,
+Middle East and Asian refineries, Google Earth imagery) find and count the floating-roof
+tanks at an unseen Alberta terminal in a different imagery source, and does it:
+
+| Hypothesis | Tested here? |
+|---|---|
+| H1: detects floating roofs whose roof sits visibly below the rim | yes: 11 tanks |
+| H2: ignores fixed-roof / domed tanks | yes: 4 tanks |
+| H3: may miss floating roofs that are nearly full (roof near the rim) | **no**: 0 such tanks in the image |
+
+**What makes it hard (domain shift).** Different continent and climate, a different
+imagery provider (Esri / Maxar WorldView-3 instead of Google Earth), an unknown training
+resolution, and tanks at Hardisty (55–70 m) that are larger in pixels than most training
+tanks, so a single tank can be split into several boxes.
+
+**Evaluation design.**
+- Ground truth for the test site was labelled by hand **before the model was trained**
+  (centre, rim diameter, roof type per tank), so it could not be tuned to the output.
+- A detection matches a tank if its centre lies within half the tank's radius, one-to-one.
+- Reported: TP/FP/FN, precision, recall, F1, recall per roof condition, how many fixed-roof
+  tanks were correctly ignored, diameter error, count error, CPU runtime.
+- Numbers are reported as computed (decimals truncated, never rounded up).
+
+## Dataset
+
+**Training data: [Kaggle Oil Storage Tanks](https://www.kaggle.com/datasets/towardsentropy/oil-storage-tanks)**
+(`towardsentropy/oil-storage-tanks`, licence listed as unknown).
+
+| Property | Value |
+|---|---|
+| Source scenes | 100 Google Earth scenes, 4800 × 4800 px, refinery and terminal sites in 31 countries/regions |
+| Patches | 10,000 overlapping 512 × 512 px patches (100 per scene, named `scene_row_col.jpg`) |
+| Patches containing tanks | 1,595 |
+| Labelled boxes | 5,820, one class: "Floating Head Tank" (fixed-roof tanks are not labelled) |
+| Box side (px) | median 63.0, 75th percentile 85.6, max 186.5 |
+| Resolution | not published; roughly 0.55 m/px (estimate) |
+
+**Split by scene, not by patch.** Patches from the same scene overlap, so a random patch
+split puts near-duplicates in both train and test and inflates the score. Scenes are
+split 70 / 15 / 15 with a fixed seed ([data/splits.json](data/splits.json)); a test
+checks that no scene appears in two splits. In train only, 3 of every 4 tank-free patches
+are dropped to save compute; validation and test keep every patch.
+
+| Split | Scenes | Patches | With tanks | Boxes |
+|---|---|---|---|---|
+| train | 70 | 2,567 | 1,153 | 4,246 |
+| val | 15 | 1,500 | 231 | 762 |
+| test | 15 | 1,500 | 211 | 812 |
+
+**Test site: Keystone Hardisty terminal, Hardisty, Alberta.** Located from TC Energy's
+published legal land description (NW-29 / SW-32-042-09-W4) and cross-checked against the
+published Phase C tank sizes (3 × 55.17 m, 3 × 65.23 m, 2 × 69.80 m). Esri World Imagery,
+WorldView-3, captured 2022-06-08; 1.147 km² area of interest, 1,834.5 km from the nearest
+training scene. Resampled from 0.36 m/px to 0.55 and 0.80 m/px. 15 scored tanks:
+11 floating-roof, 4 fixed-roof.
+
+## Results
+
+**On held-out Kaggle scenes:** mAP@0.5 = 0.9059 (precision 0.7718, recall 0.9039 at
+confidence 0.5).
+
+**At Hardisty:**
 
 | | 0.55 m/px | 0.80 m/px |
 |---|---|---|
-| Floating-roof tanks found (recall) | 11/11 | 11/11 |
+| Floating-roof tanks found | 11/11 | 11/11 |
 | False positives | 0 | 1 |
 | Fixed-roof tanks correctly ignored | 4/4 | 3/4 |
+| Diameter error (box vs rim, mean) | +7.50 m | +7.50 m |
+| CPU time for the whole area | 8.4 s | 1.8 s |
 
-All numbers, the method and the limitations are in
-[scratch/hardisty/metrics.md](scratch/hardisty/metrics.md). In short: this is one site,
-one image and 15 tanks, so it shows the model transfers to this terminal, not how
-accurate it is across Alberta. Coverage of all Alberta hubs is work in progress.
+Full tables, per-tank results and limitations: [metrics.md](scratch/hardisty/metrics.md).
+In short, this is one site, one image date and 15 tanks. It shows the model transfers to
+this terminal; it is not an accuracy estimate for Alberta as a whole. Boxes include each
+tank's wall and shadow, so they read larger than the rim. Hypothesis H3 is untested.
 
 ## Method
 
-1. **Site and imagery**: located the terminal from TC Energy's legal land description and
-   cross-checked tank sizes against the published Phase C specification. Fetched Esri World
-   Imagery at zoom 18 (0.36 m/px) and resampled to 0.55 and 0.80 m/px.
-2. **Blind ground truth**: labelled every tank (centre, rim diameter, roof type) by hand
-   *before* any model was trained (`ground_truth.csv`, with its SHA-256 hash).
-3. **Model**: Faster R-CNN with a COCO-pretrained MobileNetV3-FPN backbone, fine-tuned on
-   Kaggle patches split by **scene** (70/15/15), so overlapping patches never leak between
-   splits. Test mAP@0.5 on unseen Kaggle scenes: 0.9059.
-4. **Detection**: 512 px tiles with 30% overlap, one global NMS, then a merge pass that
-   joins fragments of large tanks.
-5. **Scoring**: one-to-one centre matching (within 0.5 × GT radius) against the ground truth.
+1. **Model**: Faster R-CNN with a COCO-pretrained MobileNetV3-Large FPN backbone, head
+   replaced for two classes (background, tank), inputs kept at native 512 px. Trained
+   10 epochs (SGD, lr 0.01, batch 4, random flips) on a Kaggle T4 GPU; best epoch chosen
+   by validation AP@0.5.
+2. **Large-image inference**: 512 px tiles with 30% overlap (more than the largest tank),
+   one global NMS, then a merge pass that joins fragments of one tank (boxes whose centres
+   are closer than half the larger box's side).
+3. **Georeferencing**: web-mercator GeoTIFFs; ground resolution = mercator resolution ×
+   cos(latitude); detections exported with longitude/latitude.
 
 ## How to run
 
-Requires Python with torch, torchvision, rasterio, numpy, pillow, matplotlib, pytest and the kaggle CLI.
-
 ```bash
-python scripts/prepare_data.py          # label stats + scene split -> data/splits.json
-python scripts/build_kaggle_job.py      # bundle training into one Kaggle GPU script
-kaggle kernels push -p scratch/kaggle_train   # train; download best.pth to checkpoints/
-python -m oiltank.fetch_esri --west -111.2790 --south 52.6490 --east -111.2650 \
-       --north 52.6600 --zoom 18 --out data/hardisty/khtt_z18.tif   # (PYTHONPATH=src)
-python scripts/run_detection.py         # detections at 0.55 and 0.80 m/px
-python scripts/score.py                 # metrics.json
-python scripts/write_metrics.py         # metrics.md
-python scripts/make_figures.py          # annotated images, crop sheet, summary.png
+pip install torch torchvision rasterio numpy pillow matplotlib pytest kaggle
+python scripts/prepare_data.py                       # label stats + scene split
+python scripts/build_kaggle_job.py --user <kaggle-username>
+kaggle kernels push -p scratch/kaggle_train          # train on a Kaggle GPU
+PYTHONPATH=src python -m oiltank.fetch_esri --west -111.2790 --south 52.6490 \
+       --east -111.2650 --north 52.6600 --zoom 18 --out data/hardisty/khtt_z18.tif
+python scripts/run_detection.py                      # detections at 0.55 and 0.80 m/px
+python scripts/score.py && python scripts/write_metrics.py
+python scripts/make_figures.py
 python -m pytest
 ```
 
-Resampling to 0.55/0.80 m/px uses `oiltank.geo.resample_geotiff`. The labelling aids are
-`scripts/make_gt_sheet.py` and `scripts/measure_tanks.py`.
+Model weights and imagery are not included in the repository.
 
-## Layout
+## Repository layout
 
 ```
-src/oiltank/   data, model, training, detection, metrics, geo helpers, Esri fetcher
-scripts/       one script per step
-tests/         pytest (scene-split leakage, AP, IoU, merge pass, geo, checkpoint reload)
-scratch/hardisty/  ground truth, detections, metrics.md, figures
+src/oiltank/   dataset and split, model, training loop, tiled detection, metrics, geo, imagery fetch
+scripts/       one script per stage (data prep, training job, detection, scoring, figures)
+tests/         split leakage, AP and IoU, merge pass, geo round-trip, checkpoint reload
+docs/figures/  summary figure
 ```
 
 ## Future work
 
-Estimate how full each floating-roof tank is from the shadow the rim casts on the roof
-(inner vs outer shadow, S_in / S_out). This is not implemented yet.
+- Estimate fill level from the rim shadow on each floating roof (inner vs outer shadow, S_in / S_out).
+- Find a site or image date with nearly full roofs to test H3.
+- Extend from one terminal to the other Hardisty terminals and other Alberta hubs (work in progress).
 
-Imagery © Esri, Vantor, Earthstar Geographics. Training data: Kaggle `towardsentropy/oil-storage-tanks`.
+Imagery © Esri, Maxar/Vantor, Earthstar Geographics.
