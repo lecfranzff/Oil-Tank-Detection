@@ -1,0 +1,17 @@
+tank_id,lon,lat,diameter_m,diameter_method,diameter_uncertainty_m,type,col_055,row_055,note
+W1,-111.274284,52.657494,57.0,by_eye_rim,3,floating_sunken,596.3,620.0,"rim by eye; roof well below rim, inner crescent visible"
+W2,-111.272614,52.657502,66.0,by_eye_rim,3,floating_sunken,801.4,618.3,"rim by eye; roof well below rim, inner crescent visible"
+W3,-111.274406,52.655867,67.0,by_eye_rim,3,floating_sunken,581.3,949.3,"rim by eye; roof well below rim, inner crescent visible"
+W4,-111.272570,52.655881,69.5,by_eye_rim,3,floating_sunken,806.8,946.6,"rim by eye; roof well below rim, inner crescent visible"
+W5,-111.274356,52.654892,65.3,by_eye_rim,3,floating_sunken,587.5,1146.7,"rim by eye; roof well below rim, inner crescent visible"
+W6,-111.272590,52.654933,70.3,by_eye_rim,3,floating_sunken,804.4,1138.5,"rim by eye; roof well below rim, inner crescent visible"
+W7,-111.274288,52.654014,55.7,by_eye_rim,3,floating_sunken,595.9,1324.5,"rim by eye; roof well below rim, inner crescent visible"
+W8,-111.272708,52.654060,56.7,by_eye_rim,3,floating_sunken,789.9,1315.1,"rim by eye; roof well below rim, inner crescent visible"
+E1,-111.269360,52.656570,63.3,by_eye_rim,3,floating_sunken,1201.0,807.1,inner crescent + rolling ladder => open-top floating roof; rim by eye
+E2,-111.269364,52.655370,63.8,by_eye_rim,3,floating_sunken,1200.5,1050.1,inner crescent + rolling ladder => open-top floating roof; rim by eye
+E3,-111.269364,52.654154,63.9,by_eye_rim,3,floating_sunken,1200.5,1296.1,inner crescent + rolling ladder => open-top floating roof; rim by eye
+S1,-111.272065,52.651687,65.2,circle_fit,0.23,fixed_or_internal_roof,868.8,1795.5,"uniform white roof, centre-to-rim walkway, no inner crescent; d from circle fit (rms<=0.75 m)"
+S2,-111.270191,52.651595,65.3,circle_fit,0.75,fixed_or_internal_roof,1098.9,1814.2,"uniform white roof, centre-to-rim walkway, no inner crescent; d from circle fit (rms<=0.75 m)"
+S3,-111.272065,52.650811,65.2,circle_fit,0.28,fixed_or_internal_roof,868.8,1972.8,"uniform white roof, centre-to-rim walkway, no inner crescent; d from circle fit (rms<=0.75 m)"
+S4,-111.272002,52.649626,64.9,circle_fit,0.18,fixed_or_internal_roof,876.5,2212.8,"uniform white roof, centre-to-rim walkway, no inner crescent; d from circle fit (rms<=0.75 m)"
+X1,-111.267868,52.648703,64.0,by_eye_rim_z16,5,edge_excluded,1384.2,2399.5,cut by AOI south edge; located on z16 preview (1.449 m/px); dome roof
