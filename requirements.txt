@@ -1,0 +1,8 @@
+torch==2.14.0
+torchvision==0.29.0
+numpy==2.5.2
+pillow==12.3.0
+rasterio==1.5.1
+matplotlib==3.11.2
+pytest==9.2.0
+kaggle==2.2.5

@@ -113,12 +113,13 @@ tank's wall and shadow, so they read larger than the rim. Hypothesis H3 is untes
 ## How to run
 
 ```bash
-pip install torch torchvision rasterio numpy pillow matplotlib pytest kaggle
+pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
 python scripts/prepare_data.py                       # label stats + scene split
 python scripts/build_kaggle_job.py --user <kaggle-username>
 kaggle kernels push -p scratch/kaggle_train          # train on a Kaggle GPU
 PYTHONPATH=src python -m oiltank.fetch_esri --west -111.2790 --south 52.6490 \
        --east -111.2650 --north 52.6600 --zoom 18 --out data/hardisty/khtt_z18.tif
+python scripts/resample_hardisty.py                  # 0.36 m/px -> 0.55 and 0.80 m/px
 python scripts/run_detection.py                      # detections at 0.55 and 0.80 m/px
 python scripts/score.py && python scripts/write_metrics.py
 python scripts/make_figures.py
