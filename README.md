@@ -87,13 +87,13 @@ confidence 0.5).
 | Diameter error (box vs rim, mean) | +7.50 m | +7.50 m |
 | CPU time for the whole area | 8.4 s | 1.8 s |
 
-Full tables, per-tank results and limitations: [metrics.md](scratch/hardisty/metrics.md).
+Full tables, per-tank results and limitations: [metrics.md](results/hardisty/metrics.md).
 Every detection can be checked by eye: annotated image at
 [0.55 m/px](docs/figures/annotated.jpg) and [0.80 m/px](docs/figures/annotated_080.jpg),
 and a [per-tank crop sheet](docs/figures/crop_sheet.jpg) (ground truth green, detections
-red). The hand-labelled [ground truth](scratch/hardisty/ground_truth.csv) and its
-[SHA-256](scratch/hardisty/ground_truth.sha256) were saved before training;
-[detections.csv](scratch/hardisty/detections.csv) has every box with longitude/latitude.
+red). The hand-labelled [ground truth](results/hardisty/ground_truth.csv) and its
+[SHA-256](results/hardisty/ground_truth.sha256) were saved before training;
+[detections.csv](results/hardisty/detections.csv) has every box with longitude/latitude.
 In short, this is one site, one image date and 15 tanks. It shows the model transfers to
 this terminal; it is not an accuracy estimate for Alberta as a whole. Boxes include each
 tank's wall and shadow, so they read larger than the rim. Hypothesis H3 is untested.
@@ -135,7 +135,7 @@ src/oiltank/       dataset and split, model, training loop, tiled detection, met
 scripts/           one script per stage (data prep, training job, detection, scoring, figures)
 tests/             split leakage, AP and IoU, merge pass, geo round-trip, checkpoint reload
 docs/figures/      summary figure, annotated images at both resolutions, per-tank crop sheet
-scratch/hardisty/  test-site ground truth (with hash), detections, metrics
+results/hardisty/  test-site ground truth (with hash), detections before/after merge, metrics
 ```
 
 ## Future work

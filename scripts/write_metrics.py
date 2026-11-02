@@ -1,4 +1,4 @@
-"""Write scratch/hardisty/metrics.md from metrics.json and checkpoints/results.json.
+"""Write results/hardisty/metrics.md from metrics.json and checkpoints/results.json.
 
 Every number is read from those files; decimals are truncated (never rounded up).
 """
@@ -7,7 +7,7 @@ import math
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "scratch/hardisty"
+OUT = ROOT / "results/hardisty"
 
 
 def t(v, n=4):

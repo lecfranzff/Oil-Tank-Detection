@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 from oiltank.geo import haversine_m
 
-OUT = ROOT / "scratch/hardisty"
+OUT = ROOT / "results/hardisty"
 TARGETS = ("floating_sunken", "floating_near_full")
 # Published Phase C diameters (Matrix Service project sheet). Assigned to tanks by the
 # size groups read from the image (3 small / 3 medium / 2 large) -- see metrics.md note.

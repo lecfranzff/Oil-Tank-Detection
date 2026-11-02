@@ -13,11 +13,5 @@ checkpoints/
 __pycache__/
 .pytest_cache/
 
-# scratch: everything ignored except the final Hardisty deliverables
-scratch/*
-!scratch/hardisty/
-scratch/hardisty/*
-!scratch/hardisty/ground_truth.csv
-!scratch/hardisty/ground_truth.sha256
-!scratch/hardisty/detections.csv
-!scratch/hardisty/metrics.md
+# working files
+scratch/

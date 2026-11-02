@@ -1,0 +1,26 @@
+{
+ "0.55": {
+  "image_px": [
+   1855,
+   2361
+  ],
+  "gsd_m": 0.5499190034983277,
+  "tiles": 35,
+  "raw_boxes": 25,
+  "after_nms": 12,
+  "after_merge": 11,
+  "cpu_seconds": 8.461729526519775
+ },
+ "0.80": {
+  "image_px": [
+   1275,
+   1623
+  ],
+  "gsd_m": 0.8000782364622727,
+  "tiles": 20,
+  "raw_boxes": 36,
+  "after_nms": 14,
+  "after_merge": 13,
+  "cpu_seconds": 1.8787422180175781
+ }
+}

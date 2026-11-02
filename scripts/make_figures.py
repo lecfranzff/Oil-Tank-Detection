@@ -21,7 +21,8 @@ sys.path.insert(0, str(ROOT / "src"))
 from oiltank.geo import lonlat_to_pixel, true_gsd
 
 LAT = 52.65455
-OUT = ROOT / "scratch/hardisty"
+OUT = ROOT / "results/hardisty"
+FIGS = ROOT / "docs/figures"
 IMAGES = {"0.55": ROOT / "data/hardisty/khtt_055.tif", "0.80": ROOT / "data/hardisty/khtt_080.tif"}
 GREEN, RED, GREY, DARK = (0, 230, 0), (255, 40, 40), (200, 200, 200), (90, 90, 90)
 
@@ -161,12 +162,13 @@ def summary_png(img, metrics, path, fixed=()):
 
 
 def main():
+    FIGS.mkdir(parents=True, exist_ok=True)
     gt, dets, metrics = load()
     metrics["model_test_ap50"] = json.load(open(ROOT / "checkpoints/results.json"))["test_ap50"]
     img55, T55, gsd55 = annotate("0.55", gt, dets, metrics)
-    img55.save(OUT / "annotated.jpg", quality=90)
+    img55.save(FIGS / "annotated.jpg", quality=90)
     img80, T80, gsd80 = annotate("0.80", gt, dets, metrics, width=3)
-    img80.save(OUT / "annotated_080.jpg", quality=90)
+    img80.save(FIGS / "annotated_080.jpg", quality=90)
 
     fp = [x for x in dets if x["gsd_m"] == "0.80" and x["det_id"] in metrics["0.80"]["fp_det_ids"]]
     sheet = crop_sheet(img55, T55, gsd55, gt)
@@ -177,18 +179,14 @@ def main():
         combined.paste(sheet, (0, 0))
         combined.paste(sheet80, (0, sheet.height))
         sheet = combined
-    sheet.save(OUT / "crop_sheet.jpg", quality=90)
+    sheet.save(FIGS / "crop_sheet.jpg", quality=90)
 
     plain, _, _ = annotate("0.55", gt, dets, metrics, draw_fixed=False)
     small = plain.resize((plain.width // 2, plain.height // 2), Image.LANCZOS)
     fixed = [(c / 2, r / 2, rad / 2, k) for c, r, rad, k in fixed_roof_circles(gt, T55, gsd55)]
-    summary_png(small, metrics, OUT / "summary.png", fixed)
+    summary_png(small, metrics, FIGS / "summary.png", fixed)
 
-    figs = ROOT / "docs/figures"
-    figs.mkdir(parents=True, exist_ok=True)
-    for name in ("summary.png", "annotated.jpg", "annotated_080.jpg", "crop_sheet.jpg"):
-        (figs / name).write_bytes((OUT / name).read_bytes())
-    print("wrote annotated.jpg, annotated_080.jpg, crop_sheet.jpg, summary.png (+ copies in docs/figures/)")
+    print("wrote annotated.jpg, annotated_080.jpg, crop_sheet.jpg, summary.png to", FIGS)
 
 
 if __name__ == "__main__":

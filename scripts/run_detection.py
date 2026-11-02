@@ -1,6 +1,6 @@
 """Detect tanks on the Hardisty AOI at 0.55 and 0.8 m/px, before and after the merge pass.
 
-Writes scratch/hardisty/detections.csv (merged boxes) and detections_raw.csv (after NMS,
+Writes results/hardisty/detections.csv (merged boxes) and detections_raw.csv (after NMS,
 before merge), and prints counts and CPU runtime.
 """
 import csv
@@ -21,7 +21,7 @@ from oiltank.model import load_checkpoint
 
 LAT = 52.65455
 IMAGES = {"0.55": ROOT / "data/hardisty/khtt_055.tif", "0.80": ROOT / "data/hardisty/khtt_080.tif"}
-OUT = ROOT / "scratch/hardisty"
+OUT = ROOT / "results/hardisty"
 CONF, OVERLAP = 0.5, 0.3
 
 

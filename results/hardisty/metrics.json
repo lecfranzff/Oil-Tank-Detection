@@ -1,0 +1,314 @@
+{
+ "0.55": {
+  "detections_total": 11,
+  "detections_ignored_edge": 0,
+  "ignored_det_ids": [],
+  "tp": 11,
+  "fp": 0,
+  "fn": 0,
+  "precision": 1.0,
+  "recall": 1.0,
+  "f1": 1.0,
+  "fp_det_ids": [],
+  "fn_tank_ids": [],
+  "recall_sunken": [
+   11,
+   11
+  ],
+  "recall_near_full": [
+   0,
+   0
+  ],
+  "fixed_tanks": 4,
+  "fixed_correctly_ignored": 4,
+  "fixed_hits": {
+   "S1": [],
+   "S2": [],
+   "S3": [],
+   "S4": []
+  },
+  "diameter_mae_vs_gt_m": 7.507272727272729,
+  "diameter_mean_signed_vs_gt_m": 7.507272727272729,
+  "diameter_mae_vs_spec_m": 6.452499999999997,
+  "n_spec_compared": 8,
+  "detected_count": 11,
+  "gt_target_count": 11,
+  "per_tank": [
+   {
+    "tank_id": "W1",
+    "det_id": "D0.55_7",
+    "score": 0.9836,
+    "centre_offset_m": 2.518675084508101,
+    "gt_d_m": 57.0,
+    "det_d_m": 60.55,
+    "n_fragments": 1,
+    "spec_d_m": 55.17
+   },
+   {
+    "tank_id": "W2",
+    "det_id": "D0.55_8",
+    "score": 0.9786,
+    "centre_offset_m": 2.7543948687057402,
+    "gt_d_m": 66.0,
+    "det_d_m": 75.22,
+    "n_fragments": 1,
+    "spec_d_m": 65.23
+   },
+   {
+    "tank_id": "W3",
+    "det_id": "D0.55_11",
+    "score": 0.5368,
+    "centre_offset_m": 7.393230609904427,
+    "gt_d_m": 67.0,
+    "det_d_m": 67.39,
+    "n_fragments": 1,
+    "spec_d_m": 65.23
+   },
+   {
+    "tank_id": "W4",
+    "det_id": "D0.55_6",
+    "score": 0.9859,
+    "centre_offset_m": 3.5887910246222234,
+    "gt_d_m": 69.5,
+    "det_d_m": 78.33,
+    "n_fragments": 1,
+    "spec_d_m": 69.8
+   },
+   {
+    "tank_id": "W5",
+    "det_id": "D0.55_5",
+    "score": 0.9883,
+    "centre_offset_m": 2.300300264768736,
+    "gt_d_m": 65.3,
+    "det_d_m": 69.97,
+    "n_fragments": 1,
+    "spec_d_m": 65.23
+   },
+   {
+    "tank_id": "W6",
+    "det_id": "D0.55_10",
+    "score": 0.972,
+    "centre_offset_m": 2.6462677954639586,
+    "gt_d_m": 70.3,
+    "det_d_m": 78.13,
+    "n_fragments": 1,
+    "spec_d_m": 69.8
+   },
+   {
+    "tank_id": "W7",
+    "det_id": "D0.55_9",
+    "score": 0.9769,
+    "centre_offset_m": 1.9977060602989734,
+    "gt_d_m": 55.7,
+    "det_d_m": 58.94,
+    "n_fragments": 1,
+    "spec_d_m": 55.17
+   },
+   {
+    "tank_id": "W8",
+    "det_id": "D0.55_4",
+    "score": 0.9909,
+    "centre_offset_m": 3.764090857729783,
+    "gt_d_m": 56.7,
+    "det_d_m": 63.89,
+    "n_fragments": 1,
+    "spec_d_m": 55.17
+   },
+   {
+    "tank_id": "E1",
+    "det_id": "D0.55_2",
+    "score": 0.9976,
+    "centre_offset_m": 1.4027489931638921,
+    "gt_d_m": 63.3,
+    "det_d_m": 74.17,
+    "n_fragments": 1,
+    "spec_d_m": null
+   },
+   {
+    "tank_id": "E2",
+    "det_id": "D0.55_1",
+    "score": 0.9978,
+    "centre_offset_m": 6.827985136058538,
+    "gt_d_m": 63.8,
+    "det_d_m": 77.81,
+    "n_fragments": 2,
+    "spec_d_m": null
+   },
+   {
+    "tank_id": "E3",
+    "det_id": "D0.55_3",
+    "score": 0.996,
+    "centre_offset_m": 6.335005908493435,
+    "gt_d_m": 63.9,
+    "det_d_m": 76.68,
+    "n_fragments": 1,
+    "spec_d_m": null
+   }
+  ],
+  "raw_boxes": 25,
+  "after_nms": 12,
+  "after_merge": 11,
+  "cpu_seconds": 8.461729526519775,
+  "tiles": 35,
+  "gsd_m": 0.5499190034983277
+ },
+ "0.80": {
+  "detections_total": 13,
+  "detections_ignored_edge": 1,
+  "ignored_det_ids": [
+   "D0.80_13"
+  ],
+  "tp": 11,
+  "fp": 1,
+  "fn": 0,
+  "precision": 0.9166666666666666,
+  "recall": 1.0,
+  "f1": 0.9565217391304348,
+  "fp_det_ids": [
+   "D0.80_12"
+  ],
+  "fn_tank_ids": [],
+  "recall_sunken": [
+   11,
+   11
+  ],
+  "recall_near_full": [
+   0,
+   0
+  ],
+  "fixed_tanks": 4,
+  "fixed_correctly_ignored": 3,
+  "fixed_hits": {
+   "S1": [],
+   "S2": [
+    "D0.80_12"
+   ],
+   "S3": [],
+   "S4": []
+  },
+  "diameter_mae_vs_gt_m": 7.505454545454546,
+  "diameter_mean_signed_vs_gt_m": 7.505454545454546,
+  "diameter_mae_vs_spec_m": 6.751249999999999,
+  "n_spec_compared": 8,
+  "detected_count": 12,
+  "gt_target_count": 11,
+  "per_tank": [
+   {
+    "tank_id": "W1",
+    "det_id": "D0.80_6",
+    "score": 0.9746,
+    "centre_offset_m": 0.9821939082020343,
+    "gt_d_m": 57.0,
+    "det_d_m": 63.23,
+    "n_fragments": 1,
+    "spec_d_m": 55.17
+   },
+   {
+    "tank_id": "W2",
+    "det_id": "D0.80_7",
+    "score": 0.973,
+    "centre_offset_m": 4.925404945447811,
+    "gt_d_m": 66.0,
+    "det_d_m": 73.76,
+    "n_fragments": 1,
+    "spec_d_m": 65.23
+   },
+   {
+    "tank_id": "W3",
+    "det_id": "D0.80_11",
+    "score": 0.9322,
+    "centre_offset_m": 3.669546932936631,
+    "gt_d_m": 67.0,
+    "det_d_m": 70.36,
+    "n_fragments": 1,
+    "spec_d_m": 65.23
+   },
+   {
+    "tank_id": "W4",
+    "det_id": "D0.80_10",
+    "score": 0.9573,
+    "centre_offset_m": 4.3227630790047735,
+    "gt_d_m": 69.5,
+    "det_d_m": 79.08,
+    "n_fragments": 1,
+    "spec_d_m": 69.8
+   },
+   {
+    "tank_id": "W5",
+    "det_id": "D0.80_4",
+    "score": 0.9846,
+    "centre_offset_m": 1.9250512192877407,
+    "gt_d_m": 65.3,
+    "det_d_m": 72.64,
+    "n_fragments": 1,
+    "spec_d_m": 65.23
+   },
+   {
+    "tank_id": "W6",
+    "det_id": "D0.80_5",
+    "score": 0.9809,
+    "centre_offset_m": 1.8230814617058715,
+    "gt_d_m": 70.3,
+    "det_d_m": 78.54,
+    "n_fragments": 1,
+    "spec_d_m": 69.8
+   },
+   {
+    "tank_id": "W7",
+    "det_id": "D0.80_8",
+    "score": 0.9623,
+    "centre_offset_m": 4.096885269814526,
+    "gt_d_m": 55.7,
+    "det_d_m": 58.19,
+    "n_fragments": 1,
+    "spec_d_m": 55.17
+   },
+   {
+    "tank_id": "W8",
+    "det_id": "D0.80_9",
+    "score": 0.9601,
+    "centre_offset_m": 3.664900678925517,
+    "gt_d_m": 56.7,
+    "det_d_m": 59.01,
+    "n_fragments": 1,
+    "spec_d_m": 55.17
+   },
+   {
+    "tank_id": "E1",
+    "det_id": "D0.80_2",
+    "score": 0.9901,
+    "centre_offset_m": 5.987904155258257,
+    "gt_d_m": 63.3,
+    "det_d_m": 76.11,
+    "n_fragments": 1,
+    "spec_d_m": null
+   },
+   {
+    "tank_id": "E2",
+    "det_id": "D0.80_1",
+    "score": 0.9943,
+    "centre_offset_m": 6.309370565197221,
+    "gt_d_m": 63.8,
+    "det_d_m": 73.64,
+    "n_fragments": 1,
+    "spec_d_m": null
+   },
+   {
+    "tank_id": "E3",
+    "det_id": "D0.80_3",
+    "score": 0.9865,
+    "centre_offset_m": 5.521492254583027,
+    "gt_d_m": 63.9,
+    "det_d_m": 76.5,
+    "n_fragments": 2,
+    "spec_d_m": null
+   }
+  ],
+  "raw_boxes": 36,
+  "after_nms": 14,
+  "after_merge": 13,
+  "cpu_seconds": 1.8787422180175781,
+  "tiles": 20,
+  "gsd_m": 0.8000782364622727
+ }
+}
