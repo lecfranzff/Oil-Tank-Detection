@@ -65,7 +65,12 @@ def test_pixel_lonlat_round_trip():
 
 def test_checkpoint_reload_gives_identical_outputs(tmp_path):
     """Save -> strict reload -> same boxes and scores on one patch."""
+    patch = PATCHES / "01_3_3.jpg"
+    if not patch.exists():
+        pytest.skip("needs the Kaggle patches in data/raw (a random image gives no boxes)")
     import torch
+    import torchvision.transforms.functional as TF
+    from PIL import Image
     from oiltank.model import build_model, load_checkpoint, save_checkpoint
 
     torch.manual_seed(0)
@@ -73,13 +78,7 @@ def test_checkpoint_reload_gives_identical_outputs(tmp_path):
     path = tmp_path / "m.pth"
     save_checkpoint(model, path)
     reloaded = load_checkpoint(path)                  # load_state_dict is strict
-    patch = PATCHES / "01_3_3.jpg"
-    if patch.exists():
-        import torchvision.transforms.functional as TF
-        from PIL import Image
-        image = TF.to_tensor(Image.open(patch).convert("RGB"))
-    else:
-        image = torch.rand(3, 512, 512)
+    image = TF.to_tensor(Image.open(patch).convert("RGB"))
     with torch.no_grad():
         a, b = model([image])[0], reloaded([image])[0]
     assert len(a["boxes"]) > 0                        # compare real detections, not two empty lists

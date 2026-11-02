@@ -1,5 +1,7 @@
 # Oil Tank Detection
 
+[![tests](https://github.com/lecfranzff/Oil-Tank-Detection/actions/workflows/tests.yml/badge.svg)](https://github.com/lecfranzff/Oil-Tank-Detection/actions/workflows/tests.yml)
+
 Detecting external floating-roof oil storage tanks in satellite imagery, and testing
 whether a model trained on public data transfers to a real terminal it has never seen.
 
