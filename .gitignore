@@ -21,6 +21,3 @@ scratch/hardisty/*
 !scratch/hardisty/ground_truth.sha256
 !scratch/hardisty/detections.csv
 !scratch/hardisty/metrics.md
-!scratch/hardisty/annotated.jpg
-!scratch/hardisty/crop_sheet.jpg
-!scratch/hardisty/summary.png

@@ -16,9 +16,9 @@ the first step toward estimating how much oil a terminal holds from imagery alon
 box for every *external floating-roof* tank. Fixed-roof and domed tanks are **not**
 targets and should be ignored, even though they are also round storage tanks.
 
-**Question.** Can a detector trained only on a public dataset (mostly US Gulf Coast,
-Middle East and Asian refineries, Google Earth imagery) find and count the floating-roof
-tanks at an unseen Alberta terminal in a different imagery source, and does it:
+**Question.** Can a detector trained only on a public dataset (Google Earth imagery of
+100 refinery and terminal scenes, 36 in the US and none in Canada) find and count the
+floating-roof tanks at an unseen Alberta terminal in a different imagery source, and does it:
 
 | Hypothesis | Tested here? |
 |---|---|
@@ -46,7 +46,7 @@ tanks, so a single tank can be split into several boxes.
 
 | Property | Value |
 |---|---|
-| Source scenes | 100 Google Earth scenes, 4800 × 4800 px, refinery and terminal sites in 31 countries/regions |
+| Source scenes | 100 Google Earth scenes, 4800 × 4800 px, refinery and terminal sites in 30 countries (36 US, 7 Saudi Arabia, 6 India, 6 Japan, …; none in Canada) |
 | Patches | 10,000 overlapping 512 × 512 px patches (100 per scene, named `scene_row_col.jpg`) |
 | Patches containing tanks | 1,595 |
 | Labelled boxes | 5,820, one class: "Floating Head Tank" (fixed-roof tanks are not labelled) |
@@ -88,6 +88,12 @@ confidence 0.5).
 | CPU time for the whole area | 8.4 s | 1.8 s |
 
 Full tables, per-tank results and limitations: [metrics.md](scratch/hardisty/metrics.md).
+Every detection can be checked by eye: annotated image at
+[0.55 m/px](docs/figures/annotated.jpg) and [0.80 m/px](docs/figures/annotated_080.jpg),
+and a [per-tank crop sheet](docs/figures/crop_sheet.jpg) (ground truth green, detections
+red). The hand-labelled [ground truth](scratch/hardisty/ground_truth.csv) and its
+[SHA-256](scratch/hardisty/ground_truth.sha256) were saved before training;
+[detections.csv](scratch/hardisty/detections.csv) has every box with longitude/latitude.
 In short, this is one site, one image date and 15 tanks. It shows the model transfers to
 this terminal; it is not an accuracy estimate for Alberta as a whole. Boxes include each
 tank's wall and shadow, so they read larger than the rim. Hypothesis H3 is untested.
@@ -124,10 +130,11 @@ Model weights and imagery are not included in the repository.
 ## Repository layout
 
 ```
-src/oiltank/   dataset and split, model, training loop, tiled detection, metrics, geo, imagery fetch
-scripts/       one script per stage (data prep, training job, detection, scoring, figures)
-tests/         split leakage, AP and IoU, merge pass, geo round-trip, checkpoint reload
-docs/figures/  summary figure
+src/oiltank/       dataset and split, model, training loop, tiled detection, metrics, geo, imagery fetch
+scripts/           one script per stage (data prep, training job, detection, scoring, figures)
+tests/             split leakage, AP and IoU, merge pass, geo round-trip, checkpoint reload
+docs/figures/      summary figure, annotated images at both resolutions, per-tank crop sheet
+scratch/hardisty/  test-site ground truth (with hash), detections, metrics
 ```
 
 ## Future work
