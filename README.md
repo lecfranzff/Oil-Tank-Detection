@@ -44,7 +44,8 @@ tanks, so a single tank can be split into several boxes.
 ## Dataset
 
 **Training data: [Kaggle Oil Storage Tanks](https://www.kaggle.com/datasets/towardsentropy/oil-storage-tanks)**
-(`towardsentropy/oil-storage-tanks`, licence listed as unknown).
+(`towardsentropy/oil-storage-tanks`, licence listed as unknown). Full description, label quirks
+and the box-size figure: [docs/dataset.md](docs/dataset.md).
 
 | Property | Value |
 |---|---|
@@ -136,6 +137,7 @@ Model weights and imagery are not included in the repository.
 src/oiltank/       dataset and split, model, training loop, tiled detection, metrics, geo, imagery fetch
 scripts/           one script per stage (data prep, training job, detection, scoring, figures)
 tests/             split leakage, AP and IoU, merge pass, geo round-trip, checkpoint reload
+docs/dataset.md    training data: files, labels, box sizes, scenes, split, resolution
 docs/figures/      summary figure, annotated images at both resolutions, per-tank crop sheet
 results/hardisty/  test-site ground truth (with hash), detections before/after merge, metrics
 ```
