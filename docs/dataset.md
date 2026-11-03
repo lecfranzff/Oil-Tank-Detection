@@ -69,4 +69,40 @@ the training split only, a fixed 1 in 4 of tank-free patches is kept.
 
 Not published by the dataset. `large_image_data.csv` records the Google Earth eye altitude
 of each capture: 3000 m for 95 scenes and 2000 m for 5 (scenes 13, 16, 18, 28, 36), so
-the scenes are not all at one resolution.
+the scenes are not all at one resolution. Eye altitude alone does not give metres per
+pixel (that also depends on the field of view and window size, which are not recorded),
+so it was measured.
+
+**Method** (`scripts/measure_training_gsd.py`): rebuild a scene from its 100 patches,
+fetch Esri World Imagery around the scene centre at a known resolution (zoom 16, 1.83–2.38
+m/px at these scenes), and try candidate scene resolutions from 0.30 to 0.95 m/px in
+0.0025 m/px steps. For each candidate the scene is shrunk to Esri's pixel size and slid
+over the Esri image; the score is the normalised cross-correlation of edge strength.
+
+| Scene | Place | Eye altitude | Measured | Match score | Best score > 0.05 m/px away |
+|---|---|---|---|---|---|
+| 01 | Texas City, Texas, US | 3000 m | 0.720 m/px | 0.383 | 0.084 |
+| 40 | Marcus Hook, Pennsylvania, US | 3000 m | 0.720 m/px | 0.378 | 0.202 |
+| 50 | Mina Al Fahl, Oman | 3000 m | 0.720 m/px | 0.298 | 0.133 |
+| 70 | Jurong Island, Singapore | 3000 m | 0.720 m/px | 0.411 | 0.188 |
+| 16 | Cushing, Oklahoma, US | 2000 m | 0.480 m/px | 0.354 | 0.073 |
+| 13 | Chalmette, Louisiana, US | 2000 m | 0.480 m/px | 0.458 | 0.275 |
+| 28 | Long Beach, California, US | 2000 m | 0.480 m/px | 0.338 | 0.079 |
+| 36 | Bahia Blanca, Argentina | 2000 m | 0.480 m/px | 0.339 | 0.126 |
+
+All four 3000 m scenes match best at 0.720 m/px and all four 2000 m scenes at
+0.480 m/px. The ratio is exactly 3000 / 2000, as a fixed camera would give, so **95 of the
+100 scenes are about 0.72 m/px and 5 are about 0.48 m/px**.
+
+This corrects the assumption the project started with (about 0.55 m/px, an estimate).
+What it changes:
+
+- At Hardisty, **0.80 m/px is the closer of the two test resolutions to the training
+  scale**. At 0.55 m/px a tank is about 1.3 times wider in pixels than the same tank in a
+  0.72 m/px training scene.
+- The Hardisty results themselves are unchanged; both resolutions were run and reported.
+
+Limits: 8 of 100 scenes were measured; the match assumes the Google Earth captures are
+north-up; the Esri and Google images are from different dates, so the match score is
+moderate (0.30–0.46) even at the best scale. The two altitude groups agree within each
+group to the 0.0025 m/px search step.

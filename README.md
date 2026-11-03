@@ -29,8 +29,8 @@ floating-roof tanks at an unseen Alberta terminal in a different imagery source,
 | H3: may miss floating roofs that are nearly full (roof near the rim) | **no**: 0 such tanks in the image |
 
 **What makes it hard (domain shift).** Different continent and climate, a different
-imagery provider (Esri / Maxar WorldView-3 instead of Google Earth), an unknown training
-resolution, and tanks at Hardisty (55–70 m) that are larger in pixels than most training
+imagery provider (Esri / Maxar WorldView-3 instead of Google Earth), a training
+resolution that is not published, and tanks at Hardisty (55–70 m) that are larger in pixels than most training
 tanks, so a single tank can be split into several boxes.
 
 **Evaluation design.**
@@ -54,7 +54,7 @@ and the box-size figure: [docs/dataset.md](docs/dataset.md).
 | Patches containing tanks | 1,595 |
 | Labelled boxes | 5,820, one class: "Floating Head Tank" (fixed-roof tanks are not labelled) |
 | Box side (px) | median 63.0, 75th percentile 85.6, max 186.5 |
-| Resolution | not published; roughly 0.55 m/px (estimate) |
+| Resolution | not published; measured at 0.72 m/px for the 95 scenes taken from 3000 m eye altitude and 0.48 m/px for the 5 taken from 2000 m ([how](docs/dataset.md#resolution)) |
 
 **Split by scene, not by patch.** Patches from the same scene overlap, so a random patch
 split puts near-duplicates in both train and test and inflates the score. Scenes are
@@ -72,7 +72,7 @@ are dropped to save compute; validation and test keep every patch.
 published legal land description (NW-29 / SW-32-042-09-W4) and cross-checked against the
 published Phase C tank sizes (3 × 55.17 m, 3 × 65.23 m, 2 × 69.80 m). Esri World Imagery,
 WorldView-3, captured 2022-06-08; 1.147 km² area of interest, 1,834.5 km from the nearest
-training scene. Resampled from 0.36 m/px to 0.55 and 0.80 m/px. 15 scored tanks:
+training scene. Resampled from 0.36 m/px to 0.55 and 0.80 m/px; 0.80 m/px is the closer to the training scale. 15 scored tanks:
 11 floating-roof, 4 fixed-roof.
 
 ## Results

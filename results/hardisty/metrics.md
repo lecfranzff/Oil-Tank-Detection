@@ -84,7 +84,7 @@ Recomputed from these 11 rows: diameter MAE 7.50 m, mean signed error +7.50 m (b
 - The edge tank X1 (cut by the AOI boundary) is excluded; detections centred inside it are ignored (0 at 0.55 m/px, 1 at 0.80 m/px).
 - Training settings (10 epochs, batch 4, lr 0.01) were chosen, not tuned; the best epoch was picked by val AP@0.5, and val AP was still rising at epoch 10.
 - NaN training loss appeared in 92 of 330 logged 20-iteration windows from epoch 2 onward. Nothing skipped those steps: training ran in plain fp32 with no GradScaler, autocast or isfinite check, so optimizer.step() ran on every one of the 6,420 iterations (0 skipped). The number of individual NaN iterations is unknown, because only 20-iteration means were logged. Because one step with NaN gradients would have made the weights NaN for good, and all 284 checkpoint tensors are finite, the NaN was most likely in a loss term whose gradient stayed finite (an inference, not verified). A forward-only re-check of all 2,567 train patches with the final weights (no flips, no updates) gave 0 non-finite losses, so the cause was not reproduced and remains unverified. The checkpoint was kept as-is.
-- Esri imagery is a mosaic; it was resampled by area averaging to the training resolution (~0.55 m/px, itself an estimate since the Kaggle data has no published resolution).
+- Esri imagery is a mosaic; it was resampled by area averaging to 0.55 and 0.80 m/px. 0.55 m/px was the assumed training resolution; measured afterwards (docs/dataset.md), 95 of the 100 training scenes are 0.72 m/px and 5 are 0.48 m/px, so 0.80 m/px is the closer match.
 
 ## Sources
 

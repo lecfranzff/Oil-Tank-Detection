@@ -147,8 +147,9 @@ def main():
         "- Training settings (10 epochs, batch 4, lr 0.01) were chosen, not tuned; the best epoch was "
         "picked by val AP@0.5, and val AP was still rising at epoch 10.",
         f"- {nan_note}",
-        "- Esri imagery is a mosaic; it was resampled by area averaging to the training resolution (~0.55 m/px, "
-        "itself an estimate since the Kaggle data has no published resolution).",
+        "- Esri imagery is a mosaic; it was resampled by area averaging to 0.55 and 0.80 m/px. 0.55 m/px was the "
+        "assumed training resolution; measured afterwards (docs/dataset.md), 95 of the 100 training scenes are "
+        "0.72 m/px and 5 are 0.48 m/px, so 0.80 m/px is the closer match.",
         "",
         "## Sources",
         "",
