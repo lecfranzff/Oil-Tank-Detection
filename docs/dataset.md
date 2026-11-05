@@ -34,7 +34,8 @@ Three things to know when using these labels:
   labelled in both, so 5,820 is not a count of physical tanks.
 - **Edge tanks are cut.** A tank on the patch border gets a box for the visible part only,
   which is why some boxes are far from square. 331 boxes also run past the image border;
-  the training code keeps them as given.
+  the training code clips them to the patch (the reported model was trained before that
+  clipping was added).
 - **Boxes include wall and shadow.** The labelled box covers the whole visible tank,
   shadow included, which is larger than the rim diameter.
 

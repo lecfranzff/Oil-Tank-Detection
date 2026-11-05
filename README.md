@@ -119,15 +119,20 @@ tank's wall and shadow, so they read larger than the rim. Hypothesis H3 is untes
 
 ```bash
 pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
+kaggle datasets download -d towardsentropy/oil-storage-tanks -p data/raw --unzip
 python scripts/prepare_data.py                       # label stats + scene split
+python scripts/overfit_check.py                      # optional: training loop sanity check on CPU
 python scripts/build_kaggle_job.py --user <kaggle-username>
 kaggle kernels push -p scratch/kaggle_train          # train on a Kaggle GPU
+kaggle kernels output <kaggle-username>/oil-tank-detector-train -p checkpoints   # best.pth, results.json
 PYTHONPATH=src python -m oiltank.fetch_esri --west -111.2790 --south 52.6490 \
        --east -111.2650 --north 52.6600 --zoom 18 --out data/hardisty/khtt_z18.tif
 python scripts/resample_hardisty.py                  # 0.36 m/px -> 0.55 and 0.80 m/px
 python scripts/run_detection.py                      # detections at 0.55 and 0.80 m/px
 python scripts/score.py && python scripts/write_metrics.py
 python scripts/make_figures.py
+python scripts/plot_box_sizes.py                     # training box sizes vs Hardisty tanks
+python scripts/measure_training_gsd.py               # optional, ~20 min: training-data resolution
 python -m pytest
 ```
 
@@ -137,11 +142,13 @@ Model weights and imagery are not included in the repository.
 
 ```
 src/oiltank/       dataset and split, model, training loop, tiled detection, metrics, geo, imagery fetch
-scripts/           one script per stage (data prep, training job, detection, scoring, figures)
+scripts/           one script per stage (data prep, training job, detection, scoring, figures,
+                   dataset checks); make_gt_sheet.py and measure_tanks.py were the labelling aids
 tests/             split leakage, AP and IoU, merge pass, geo round-trip, checkpoint reload,
                    labels unchanged by flips, NaN steps skipped
 docs/dataset.md    training data: files, labels, box sizes, scenes, split, resolution
-docs/figures/      summary figure, annotated images at both resolutions, per-tank crop sheet
+docs/figures/      summary figure, annotated images at both resolutions, per-tank crop sheet,
+                   training box-size histogram
 results/hardisty/  test-site ground truth (with hash), detections before/after merge, metrics
 ```
 
