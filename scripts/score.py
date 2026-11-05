@@ -49,7 +49,10 @@ def score(gt, dets):
     targets = [j for j, g in enumerate(scored_gt) if g["type"] in TARGETS]
     tp = [j for j in targets if j in match_g]
     fn = [j for j in targets if j not in match_g]
-    fp = [i for i in range(len(kept)) if i not in match_d or scored_gt[match_d[i]]["type"] not in TARGETS]
+    fp = []                                   # unmatched, or matched to a non-target tank
+    for i in range(len(kept)):
+        if i not in match_d or scored_gt[match_d[i]]["type"] not in TARGETS:
+            fp.append(i)
     n_tp, n_fp, n_fn = len(tp), len(fp), len(fn)
     precision = n_tp / (n_tp + n_fp) if n_tp + n_fp else float("nan")
     recall = n_tp / (n_tp + n_fn) if n_tp + n_fn else float("nan")

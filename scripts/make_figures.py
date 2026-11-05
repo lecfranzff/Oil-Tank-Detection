@@ -34,9 +34,10 @@ def load():
     return gt, dets, metrics
 
 
-def trunc2(v):
-    """Score shown with 2 decimals, truncated (0.999 -> 0.99, never rounded up to 1.00)."""
-    return f"{math.floor(float(v) * 100 + 1e-9) / 100:.2f}"
+def truncate(value, decimals):
+    """Cut to `decimals` places without rounding up (0.999 -> 0.99, never 1.00).
+    The tiny 1e-9 stops float error from turning 6.23 into 6.22."""
+    return f"{math.floor(float(value) * 10 ** decimals + 1e-9) / 10 ** decimals:.{decimals}f}"
 
 
 def label(d, xy, text, fill, size):
@@ -85,7 +86,7 @@ def annotate(res, gt, dets, metrics, width=4, draw_fixed=True):
             continue
         b = [float(x[k]) for k in ("x1", "y1", "x2", "y2")]
         d.rectangle(b, outline=RED, width=max(2, width - 1))
-        label(d, (b[0] + 4, b[3] - 15), trunc2(x["score"]), RED, img.size)   # inside the box
+        label(d, (b[0] + 4, b[3] - 15), truncate(x["score"], 2), RED, img.size)   # inside the box
     return img, T, gsd
 
 
@@ -108,10 +109,9 @@ def summary_png(img, metrics, path, fixed=()):
     m55, m80 = metrics["0.55"], metrics["0.80"]
 
     def f(v, n=3):
-        """Truncate (never round up) to n decimals."""
         if v is None:
             return "n/a"
-        return f"{math.floor(v * 10 ** n + 1e-9) / 10 ** n:.{n}f}" if isinstance(v, float) else str(v)
+        return truncate(v, n) if isinstance(v, float) else str(v)
 
     def frac(t):
         return f"{t[0]}/{t[1]}" if t[1] else "n/a (0 tanks)"
@@ -153,7 +153,7 @@ def summary_png(img, metrics, path, fixed=()):
     t.scale(1, 1.55)
     note = ("Faster R-CNN (MobileNetV3-FPN) trained only on the Kaggle Oil Storage Tanks\n"
             "dataset (scene-level split; test mAP@0.5 on unseen Kaggle scenes = "
-            f'{math.floor(metrics["model_test_ap50"] * 1000) / 1000:.3f}).\n'
+            f'{truncate(metrics["model_test_ap50"], 3)}).\n'
             "Ground truth labelled by hand before training. Esri World Imagery,\n"
             "WorldView-3, captured 2022-06-08. One site, 15 tanks: see metrics.md.")
     fig.text(0.53, 0.10, note, fontsize=8.5, va="bottom")

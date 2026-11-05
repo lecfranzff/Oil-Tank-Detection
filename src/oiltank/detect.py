@@ -1,6 +1,4 @@
-"""Run the detector over a large image: overlapping tiles -> one global NMS -> merge pass.
-
-"""
+"""Run the detector over a large image: overlapping tiles -> one global NMS -> merge pass."""
 import time
 
 import numpy as np
@@ -50,34 +48,42 @@ def tile_detect(model, img, conf=0.5, tile=512, overlap=0.3, nms_iou=0.5, device
     return B[keep].numpy(), S[keep].numpy(), info
 
 
+def box_centre(b):
+    return np.array([(b[0] + b[2]) / 2, (b[1] + b[3]) / 2])
+
+
+def box_side(b):
+    """Mean of width and height."""
+    return (b[2] - b[0] + b[3] - b[1]) / 2
+
+
+def find_close_pair(boxes, factor):
+    """First pair (i, j) whose centres are closer than factor x the larger box's side."""
+    for i in range(len(boxes)):
+        for j in range(i + 1, len(boxes)):
+            distance = np.linalg.norm(box_centre(boxes[i]) - box_centre(boxes[j]))
+            if distance < factor * max(box_side(boxes[i]), box_side(boxes[j])):
+                return i, j
+    return None
+
+
 def merge_close_boxes(boxes, scores, factor=0.5):
     """Union boxes that are fragments of one tank.
 
-    Two boxes are merged when their centres are closer than `factor` x the larger box's
-    side (mean of width and height). Repeats until nothing changes. The merged box is
-    the union of the fragments and keeps the highest score.
-    Returns boxes, scores, and how many original boxes went into each merged box.
+    While some pair of boxes is close (see find_close_pair), replace the pair by one box
+    covering both, keeping the higher score. Returns boxes, scores, and how many original
+    boxes went into each merged box.
     """
     boxes = [np.asarray(b, dtype=float) for b in boxes]
     scores = [float(s) for s in scores]
     counts = [1] * len(boxes)
-    changed = True
-    while changed:
-        changed = False
-        for i in range(len(boxes)):
-            for j in range(i + 1, len(boxes)):
-                a, b = boxes[i], boxes[j]
-                ca = np.array([(a[0] + a[2]) / 2, (a[1] + a[3]) / 2])
-                cb = np.array([(b[0] + b[2]) / 2, (b[1] + b[3]) / 2])
-                side = max((a[2] - a[0] + a[3] - a[1]) / 2, (b[2] - b[0] + b[3] - b[1]) / 2)
-                if np.linalg.norm(ca - cb) < factor * side:
-                    boxes[i] = np.array([min(a[0], b[0]), min(a[1], b[1]),
-                                         max(a[2], b[2]), max(a[3], b[3])])
-                    scores[i] = max(scores[i], scores[j])
-                    counts[i] += counts[j]
-                    del boxes[j], scores[j], counts[j]
-                    changed = True
-                    break
-            if changed:
-                break
+    pair = find_close_pair(boxes, factor)
+    while pair is not None:
+        i, j = pair
+        a, b = boxes[i], boxes[j]
+        boxes[i] = np.array([min(a[0], b[0]), min(a[1], b[1]), max(a[2], b[2]), max(a[3], b[3])])
+        scores[i] = max(scores[i], scores[j])
+        counts[i] += counts[j]
+        del boxes[j], scores[j], counts[j]
+        pair = find_close_pair(boxes, factor)
     return np.array(boxes).reshape(-1, 4), np.array(scores), counts
