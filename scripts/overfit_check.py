@@ -45,7 +45,8 @@ def main(epochs=40, n=16):
     print(f"before training: AP@0.5 {average_precision(preds, gts):.4f}")
     losses, t0 = [], time.time()
     for ep in range(epochs):
-        losses += train_one_epoch(model, loader, opt, "cpu", log_every=0)
+        epoch_losses, _ = train_one_epoch(model, loader, opt, "cpu", log_every=0)
+        losses += epoch_losses
         if (ep + 1) % 5 == 0:
             print(f"epoch {ep + 1}: loss {np.mean(losses[-4:]):.4f}  ({time.time() - t0:.0f}s)")
     sec_per_iter = (time.time() - t0) / len(losses)

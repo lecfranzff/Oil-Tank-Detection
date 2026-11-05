@@ -96,3 +96,43 @@ def test_merge_joins_fragments_but_keeps_neighbours_apart():
     # two whole 120 px tanks whose centres are 180 px apart (like W6/W8: 99 m at 0.55 m/px)
     b, s, n = merge_close_boxes([[0, 0, 120, 120], [180, 0, 300, 120]], [0.9, 0.9])
     assert len(b) == 2 and n == [1, 1]
+
+
+def test_training_reads_keep_labels_intact_and_boxes_inside_the_patch(tmp_path):
+    import random
+    from PIL import Image
+    from oiltank.data import TankPatches
+
+    Image.new("RGB", (512, 512)).save(tmp_path / "01_0_0.jpg")
+    stored = {"01_0_0.jpg": np.array([[-10, 100, 40, 160], [300, 480, 360, 530]], dtype=np.float32)}
+    original = stored["01_0_0.jpg"].copy()
+    ds = TankPatches(tmp_path, ["01_0_0.jpg"], stored, train=True)
+    random.seed(0)
+    for _ in range(20):                               # many reads, with random flips
+        boxes = ds[0][1]["boxes"]
+        assert boxes.min() >= 0 and boxes.max() <= 512
+    assert np.array_equal(stored["01_0_0.jpg"], original)
+
+
+def test_non_finite_loss_step_is_skipped():
+    import torch
+    from oiltank.train import train_one_epoch
+
+    class FakeDetector(torch.nn.Module):
+        """Returns a normal loss, then NaN, then a normal loss again."""
+        def __init__(self):
+            super().__init__()
+            self.w = torch.nn.Parameter(torch.ones(1))
+            self.calls = 0
+
+        def forward(self, images, targets):
+            self.calls += 1
+            bad = torch.tensor(float("nan")) if self.calls == 2 else torch.tensor(0.0)
+            return {"loss": (self.w - 3) ** 2 + bad}
+
+    model = FakeDetector()
+    batch = ([torch.zeros(3, 8, 8)], [{"boxes": torch.zeros(0, 4)}])
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
+    losses, skipped = train_one_epoch(model, [batch, batch, batch], optimizer, "cpu", log_every=0)
+    assert skipped == 1 and len(losses) == 2
+    assert torch.isfinite(model.w).all()

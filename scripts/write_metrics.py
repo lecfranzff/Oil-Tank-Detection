@@ -52,7 +52,12 @@ def main():
                 "weights NaN for good, and all 284 checkpoint tensors are finite, the NaN was most likely in "
                 "a loss term whose gradient stayed finite (an inference, not verified). A forward-only re-check "
                 "of all 2,567 train patches with the final weights (no flips, no updates) gave 0 non-finite "
-                "losses, so the cause was not reproduced and remains unverified. The checkpoint was kept as-is.")
+                "losses, so the cause was not reproduced and remains unverified. The checkpoint was kept as-is. "
+                "After training, two guards were added to the code (not used for this checkpoint): boxes "
+                "are clipped to the patch, and any step with a non-finite loss is skipped and counted. "
+                "The same change fixed a bug where random flips edited the stored labels in place; with "
+                "the 2 data-loader workers used on Kaggle every epoch started from unedited labels "
+                "(checked), so this checkpoint was not affected.")
 
     def row(name, f):
         return f"| {name} | {f(a)} | {f(b)} |"

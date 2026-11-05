@@ -107,6 +107,8 @@ tank's wall and shadow, so they read larger than the rim. Hypothesis H3 is untes
    replaced for two classes (background, tank), inputs kept at native 512 px. Trained
    10 epochs (SGD, lr 0.01, batch 4, random flips) on a Kaggle T4 GPU; best epoch chosen
    by validation AP@0.5.
+   Since then the training code clips boxes to the patch and skips any step whose loss
+   is NaN; the reported model was trained before that change ([details](results/hardisty/metrics.md#limitations-and-notes)).
 2. **Large-image inference**: 512 px tiles with 30% overlap (more than the largest tank),
    one global NMS, then a merge pass that joins fragments of one tank (boxes whose centres
    are closer than half the larger box's side).
@@ -136,7 +138,8 @@ Model weights and imagery are not included in the repository.
 ```
 src/oiltank/       dataset and split, model, training loop, tiled detection, metrics, geo, imagery fetch
 scripts/           one script per stage (data prep, training job, detection, scoring, figures)
-tests/             split leakage, AP and IoU, merge pass, geo round-trip, checkpoint reload
+tests/             split leakage, AP and IoU, merge pass, geo round-trip, checkpoint reload,
+                   labels unchanged by flips, NaN steps skipped
 docs/dataset.md    training data: files, labels, box sizes, scenes, split, resolution
 docs/figures/      summary figure, annotated images at both resolutions, per-tank crop sheet
 results/hardisty/  test-site ground truth (with hash), detections before/after merge, metrics

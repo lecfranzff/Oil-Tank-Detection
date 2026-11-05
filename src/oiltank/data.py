@@ -97,9 +97,13 @@ class TankPatches(torch.utils.data.Dataset):
     def __getitem__(self, i):
         name = self.names[i]
         img = TF.to_tensor(Image.open(self.image_dir / name).convert("RGB"))
-        boxes = torch.as_tensor(self.boxes[name]).reshape(-1, 4)
+        # torch.tensor makes a copy; editing a view of the stored labels would flip them
+        # for good, and the next epoch would pair an unflipped image with flipped boxes
+        boxes = torch.tensor(self.boxes[name]).reshape(-1, 4)
+        w, h = img.shape[2], img.shape[1]
+        boxes[:, [0, 2]] = boxes[:, [0, 2]].clamp(0, w)   # some labels run past the patch
+        boxes[:, [1, 3]] = boxes[:, [1, 3]].clamp(0, h)   # edge; keep them inside it
         if self.train:
-            w, h = img.shape[2], img.shape[1]
             if random.random() < 0.5:              # horizontal flip
                 img = img.flip(2)
                 boxes[:, [0, 2]] = w - boxes[:, [2, 0]]
