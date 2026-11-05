@@ -46,19 +46,34 @@ def edges(a):
     return np.hypot(gx, gy)
 
 
-def best_match(image, template):
-    """Highest normalised cross-correlation of template over image (FFT, no padding)."""
+def slide_dot(image, template):
+    """Dot product of the template with every same-sized window of the image.
+
+    Looping over every position would take hours for these image sizes. Multiplying in
+    the frequency domain (np.fft) gives the result for all positions at once.
+    """
     H, W = image.shape
     h, w = template.shape
+    flipped = template[::-1, ::-1]
+    full = np.fft.irfft2(np.fft.rfft2(image) * np.fft.rfft2(flipped, (H, W)), (H, W))
+    return full[h - 1:, w - 1:]                  # keep positions where the template fits
+
+
+def window_sums(a, h, w):
+    """Sum of every h x w window of `a`, from a table of running totals (4 lookups each)."""
+    totals = np.pad(a, ((1, 0), (1, 0))).cumsum(0).cumsum(1)
+    return totals[h:, w:] - totals[:-h, w:] - totals[h:, :-w] + totals[:-h, :-w]
+
+
+def best_match(image, template):
+    """Best normalised cross-correlation (1 = identical pattern) of template over image."""
+    h, w = template.shape
     t = template - template.mean()
-    t /= np.sqrt((t ** 2).sum())
-    corr = np.fft.irfft2(np.fft.rfft2(image) * np.fft.rfft2(t[::-1, ::-1], (H, W)), (H, W))
-    corr = corr[h - 1:, w - 1:]
-    s1 = np.pad(image, ((1, 0), (1, 0))).cumsum(0).cumsum(1)
-    s2 = np.pad(image ** 2, ((1, 0), (1, 0))).cumsum(0).cumsum(1)
-    window = lambda s: s[h:, w:] - s[:-h, w:] - s[h:, :-w] + s[:-h, :-w]
-    var = window(s2) - window(s1) ** 2 / (h * w)
-    return float((corr / np.sqrt(np.maximum(var, 1e-6))).max())
+    t /= np.sqrt((t ** 2).sum())                # template now has mean 0 and length 1
+    dot = slide_dot(image, t)
+    n = h * w
+    spread = window_sums(image ** 2, h, w) - window_sums(image, h, w) ** 2 / n
+    return float((dot / np.sqrt(np.maximum(spread, 1e-6))).max())
 
 
 def measure(scene):

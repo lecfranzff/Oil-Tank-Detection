@@ -102,7 +102,8 @@ def main():
         parts.append(f"\n# ---------------------------------------------------------------- {m}.py\n{src}\n")
     splits = json.load(open(ROOT / "data/splits.json"))
     keep = {"seed": splits["seed"], "scenes": splits["scenes"], "patches": splits["patches"]}
-    parts.append(f"\nSPLITS = json.loads({json.dumps(json.dumps(keep))})\n")
+    # the split only holds numbers, strings and lists, so its JSON text is valid Python
+    parts.append(f"\nSPLITS = {json.dumps(keep)}\n")
     parts.append(MAIN)
     (OUT / "train_kaggle.py").write_text("".join(parts))
 
