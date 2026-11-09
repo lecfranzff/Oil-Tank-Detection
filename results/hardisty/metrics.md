@@ -71,6 +71,45 @@ Recomputed from these 11 rows: diameter MAE 7.50 m, mean signed error +7.50 m (b
 
 Recomputed from these 11 rows: diameter MAE 7.50 m, mean signed error +7.50 m (box larger than rim on 11/11 tanks).
 
+## Sweeps (same model, same ground truth)
+
+Made by scripts/sweep.py (sweeps.json). These were run after the main result to see how sensitive it is; the reported setting stays conf 0.5. The conf 0.5 rows below reproduce the main table exactly.
+
+**Confidence threshold**
+
+| Threshold | 0.55 m/px TP / FP / FN | Fixed roofs ignored | 0.80 m/px TP / FP / FN | Fixed roofs ignored |
+|---|---|---|---|---|
+| 0.05 | 11 / 0 / 0 | 4/4 | 11 / 3 / 0 | 2/4 |
+| 0.1 | 11 / 0 / 0 | 4/4 | 11 / 1 / 0 | 3/4 |
+| 0.2 | 11 / 0 / 0 | 4/4 | 11 / 1 / 0 | 3/4 |
+| 0.3 | 11 / 0 / 0 | 4/4 | 11 / 1 / 0 | 3/4 |
+| 0.4 | 11 / 0 / 0 | 4/4 | 11 / 1 / 0 | 3/4 |
+| 0.5 | 11 / 0 / 0 | 4/4 | 11 / 1 / 0 | 3/4 |
+| 0.6 | 10 / 0 / 1 | 4/4 | 11 / 1 / 0 | 3/4 |
+| 0.7 | 10 / 0 / 1 | 4/4 | 11 / 0 / 0 | 4/4 |
+| 0.8 | 10 / 0 / 1 | 4/4 | 11 / 0 / 0 | 4/4 |
+| 0.9 | 10 / 0 / 1 | 4/4 | 11 / 0 / 0 | 4/4 |
+| 0.95 | 10 / 0 / 1 | 4/4 | 10 / 0 / 1 | 4/4 |
+
+**Resolution** (conf 0.5)
+
+| Ground resolution (m/px) | Image (px) | Tiles | TP / FP / FN | Fixed roofs ignored | Missed tanks | Mean box − rim (m) |
+|---|---|---|---|---|---|---|
+| 0.4000 | 2550 × 3246 | 63 | 8 / 0 / 3 | 4/4 | W3, W4, W6 | −0.29 |
+| 0.4800 | 2125 × 2705 | 48 | 11 / 1 / 0 | 4/4 | none | +7.62 |
+| 0.5499 | 1855 × 2361 | 35 | 11 / 0 / 0 | 4/4 | none | +7.50 |
+| 0.6399 | 1594 × 2029 | 30 | 11 / 0 / 0 | 4/4 | none | +7.33 |
+| 0.7199 | 1417 × 1803 | 20 | 11 / 0 / 0 | 4/4 | none | +5.73 |
+| 0.8000 | 1275 × 1623 | 20 | 11 / 1 / 0 | 3/4 | none | +7.50 |
+| 0.9003 | 1133 × 1443 | 12 | 11 / 1 / 0 | 3/4 | none | +6.39 |
+| 1.0000 | 1020 × 1298 | 12 | 11 / 0 / 0 | 4/4 | none | +6.56 |
+| 1.2001 | 850 × 1082 | 6 | 11 / 0 / 0 | 4/4 | none | +6.11 |
+
+- All 11 floating roofs are found at every resolution from 0.48 to 1.20 m/px. At 0.40 m/px the three largest (W3, W4, W6; 167–176 px across) are missed: only 2 of the 5,820 training boxes are that large.
+- At 0.72 m/px, the measured resolution of 95 training scenes, the result is 11 / 0 / 0 with all 4 fixed roofs ignored.
+- False positives, checked by eye: at 0.80 m/px the shadow crescent inside fixed-roof tank S2's rim (at every threshold up to 0.6; at 0.05 the pipe below and fixed-roof S1 add one each); at 0.90 m/px the same kind of rim shadow on fixed-roof S1; at 0.48 m/px a white bent pipe about 170 m from any tank, near the south edge of the image.
+- At 0.55 m/px any threshold above 0.5 loses W3 (score 0.5368). At 0.80 m/px thresholds 0.7–0.9 remove the S2 false positive and keep all 11 tanks; at 0.95 one tank is lost (W3).
+- One image and 15 tanks: these show sensitivity at this site, not a tuned operating point.
 
 ## Limitations and notes
 

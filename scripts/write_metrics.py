@@ -39,6 +39,47 @@ def per_tank_table(res, x):
     return out
 
 
+def sweep_section(sw):
+    """Tables from sweeps.json (scripts/sweep.py). Same model, same ground truth."""
+    def counts(r):
+        return f'{r["tp"]} / {r["fp"]} / {r["fn"]}'
+
+    def fixed(r):
+        return f'{r["fixed_correctly_ignored"]}/{r["fixed_tanks"]}'
+
+    out = ["## Sweeps (same model, same ground truth)", "",
+           "Made by scripts/sweep.py (sweeps.json). These were run after the main result to see how "
+           "sensitive it is; the reported setting stays conf 0.5. The conf 0.5 rows below reproduce the "
+           "main table exactly.", "",
+           "**Confidence threshold**", "",
+           "| Threshold | 0.55 m/px TP / FP / FN | Fixed roofs ignored | 0.80 m/px TP / FP / FN | Fixed roofs ignored |",
+           "|---|---|---|---|---|"]
+    for r55, r80 in zip(sw["thresholds"]["0.55"], sw["thresholds"]["0.80"]):
+        out.append(f'| {r55["conf"]} | {counts(r55)} | {fixed(r55)} | {counts(r80)} | {fixed(r80)} |')
+    out += ["", "**Resolution** (conf 0.5)", "",
+            "| Ground resolution (m/px) | Image (px) | Tiles | TP / FP / FN | Fixed roofs ignored | Missed tanks | Mean box − rim (m) |",
+            "|---|---|---|---|---|---|---|"]
+    for r in sw["resolutions"]:
+        e = r["diameter_mean_signed_vs_gt_m"]
+        out.append(f'| {t(r["gsd_m"], 4)} | {r["image_px"][0]} × {r["image_px"][1]} | {r["tiles"]} | '
+                   f'{counts(r)} | {fixed(r)} | {", ".join(r["fn_tank_ids"]) or "none"} | '
+                   f'{"+" if e >= 0 else "−"}{t(abs(e), 2)} |')
+    out += ["",
+            "- All 11 floating roofs are found at every resolution from 0.48 to 1.20 m/px. At 0.40 m/px "
+            "the three largest (W3, W4, W6; 167–176 px across) are missed: only 2 of the 5,820 training "
+            "boxes are that large.",
+            "- At 0.72 m/px, the measured resolution of 95 training scenes, the result is 11 / 0 / 0 with "
+            "all 4 fixed roofs ignored.",
+            "- False positives, checked by eye: at 0.80 m/px the shadow crescent inside fixed-roof tank S2's "
+            "rim (at every threshold up to 0.6; at 0.05 the pipe below and fixed-roof S1 add one each); at 0.90 m/px the same kind of rim shadow on fixed-roof S1; "
+            "at 0.48 m/px a white bent pipe about 170 m from any tank, near the south edge of the image.",
+            "- At 0.55 m/px any threshold above 0.5 loses W3 (score 0.5368). At 0.80 m/px thresholds "
+            "0.7–0.9 remove the S2 false positive and keep all 11 tanks; at 0.95 one tank is lost "
+            f'({", ".join(sw["thresholds"]["0.80"][-1]["fn_tank_ids"])}).',
+            "- One image and 15 tanks: these show sensitivity at this site, not a tuned operating point."]
+    return out
+
+
 def main():
     m = json.load(open(OUT / "metrics.json"))
     r = json.load(open(ROOT / "checkpoints/results.json"))
@@ -129,6 +170,7 @@ def main():
     ]
     for res, x in (("0.55", a), ("0.80", b)):
         lines += per_tank_table(res, x)
+    lines += sweep_section(json.load(open(OUT / "sweeps.json")))
     lines += [
         "",
         "## Limitations and notes",
