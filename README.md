@@ -101,6 +101,14 @@ In short, this is one site, one image date and 15 tanks. It shows the model tran
 this terminal; it is not an accuracy estimate for Alberta as a whole. Boxes include each
 tank's wall and shadow, so they read larger than the rim. Hypothesis H3 is untested.
 
+**Sensitivity** ([sweeps](results/hardisty/metrics.md#sweeps-same-model-same-ground-truth)):
+all 11 floating roofs are found at every resolution from 0.48 to 1.20 m/px. At 0.40 m/px
+the three largest are missed, being bigger in pixels than all but 2 training boxes. At
+0.72 m/px, the measured scale of most training scenes, the result is 11/11 with no false
+positives and all 4 fixed roofs ignored. The false positives that do appear are rim
+shadows inside fixed roofs and, at 0.48 m/px, one pipe. At 0.55 m/px one tank (W3,
+score 0.53) is lost at any threshold above 0.5.
+
 ## Method
 
 1. **Model**: Faster R-CNN with a COCO-pretrained MobileNetV3-Large FPN backbone, head
@@ -129,7 +137,9 @@ PYTHONPATH=src python -m oiltank.fetch_esri --west -111.2790 --south 52.6490 \
        --east -111.2650 --north 52.6600 --zoom 18 --out data/hardisty/khtt_z18.tif
 python scripts/resample_hardisty.py                  # 0.36 m/px -> 0.55 and 0.80 m/px
 python scripts/run_detection.py                      # detections at 0.55 and 0.80 m/px
-python scripts/score.py && python scripts/write_metrics.py
+python scripts/score.py
+python scripts/sweep.py                              # threshold and resolution sweeps (~1 min)
+python scripts/write_metrics.py
 python scripts/make_figures.py
 python scripts/plot_box_sizes.py                     # training box sizes vs Hardisty tanks
 python scripts/measure_training_gsd.py               # optional, ~20 min: training-data resolution
