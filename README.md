@@ -30,7 +30,7 @@ floating-roof tanks at an unseen Alberta terminal in a different imagery source,
 
 **What makes it hard (domain shift).** Different continent and climate, a different
 imagery provider (Esri / Maxar WorldView-3 instead of Google Earth), a training
-resolution that is not published, and tanks at Hardisty (55–70 m) that are larger in pixels than most training
+resolution that is not published (measured here: 0.72 m/px for most scenes), and tanks at Hardisty (55–70 m) that are larger in pixels than most training
 tanks, so a single tank can be split into several boxes.
 
 **Evaluation design.**
@@ -72,7 +72,7 @@ are dropped to save compute; validation and test keep every patch.
 published legal land description (NW-29 / SW-32-042-09-W4) and cross-checked against the
 published Phase C tank sizes (3 × 55.17 m, 3 × 65.23 m, 2 × 69.80 m). Esri World Imagery,
 WorldView-3, captured 2022-06-08; 1.147 km² area of interest, 1,834.5 km from the nearest
-training scene. Resampled from 0.36 m/px to 0.55 and 0.80 m/px; 0.80 m/px is the closer to the training scale. 15 scored tanks:
+training scene. Resampled from 0.36 m/px to 0.55 and 0.80 m/px; 0.80 m/px is the closer of the two to the training scale. 15 scored tanks:
 11 floating-roof, 4 fixed-roof.
 
 ## Results
