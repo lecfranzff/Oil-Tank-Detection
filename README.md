@@ -168,4 +168,10 @@ results/hardisty/  test-site ground truth (with hash), detections before/after m
 - Find a site or image date with nearly full roofs to test H3.
 - Extend from one terminal to the other Hardisty terminals and other Alberta hubs (work in progress).
 
+## Licence
+
+The code is MIT licensed ([LICENSE](LICENSE)). The licence does not cover the Kaggle
+training data (licence listed as unknown, not redistributed here) or the Esri imagery in
+`docs/figures/`.
+
 Imagery © Esri, Maxar/Vantor, Earthstar Geographics.
